@@ -12,7 +12,7 @@ use wgpu::{BindGroup, Buffer, BufferDescriptor, BufferUsages, Device, Queue};
 pub struct Viewport {
     params: Params,
     params_buffer: Buffer,
-    pub(crate) bind_group: BindGroup,
+    pub bind_group: BindGroup,
 }
 
 impl Viewport {

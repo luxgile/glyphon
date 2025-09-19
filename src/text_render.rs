@@ -13,10 +13,10 @@ use wgpu::{
 
 /// A text renderer that uses cached glyphs to render text into an existing render pass.
 pub struct TextRenderer {
-    vertex_buffer: Buffer,
-    vertex_buffer_size: u64,
-    pipeline: RenderPipeline,
-    glyph_vertices: Vec<GlyphToRender>,
+    // pub vertex_buffer: Buffer,
+    // pub vertex_buffer_size: u64,
+    pub pipeline: RenderPipeline,
+    pub glyph_vertices: Vec<GlyphToRender>,
 }
 
 impl TextRenderer {
@@ -27,19 +27,19 @@ impl TextRenderer {
         multisample: MultisampleState,
         depth_stencil: Option<DepthStencilState>,
     ) -> Self {
-        let vertex_buffer_size = next_copy_buffer_size(4096);
-        let vertex_buffer = device.create_buffer(&BufferDescriptor {
-            label: Some("glyphon vertices"),
-            size: vertex_buffer_size,
-            usage: BufferUsages::VERTEX | BufferUsages::COPY_DST,
-            mapped_at_creation: false,
-        });
+        // let vertex_buffer_size = next_copy_buffer_size(4096);
+        // let vertex_buffer = device.create_buffer(&BufferDescriptor {
+        //     label: Some("glyphon vertices"),
+        //     size: vertex_buffer_size,
+        //     usage: BufferUsages::VERTEX | BufferUsages::COPY_DST,
+        //     mapped_at_creation: false,
+        // });
 
         let pipeline = atlas.get_or_create_pipeline(device, multisample, depth_stencil);
 
         Self {
-            vertex_buffer,
-            vertex_buffer_size,
+            // vertex_buffer,
+            // vertex_buffer_size,
             pipeline,
             glyph_vertices: Vec::new(),
         }
@@ -55,6 +55,8 @@ impl TextRenderer {
         viewport: &Viewport,
         text_areas: impl IntoIterator<Item = TextArea<'a>>,
         cache: &mut SwashCache,
+        vertex_buffer: &mut wgpu::Buffer,
+        vertex_buffer_size: &mut u64,
     ) -> Result<(), PrepareError> {
         self.prepare_with_depth_and_custom(
             device,
@@ -64,6 +66,8 @@ impl TextRenderer {
             viewport,
             text_areas,
             cache,
+            vertex_buffer,
+            vertex_buffer_size,
             zero_depth,
             |_| None,
         )
@@ -79,6 +83,8 @@ impl TextRenderer {
         viewport: &Viewport,
         text_areas: impl IntoIterator<Item = TextArea<'a>>,
         cache: &mut SwashCache,
+        vertex_buffer: &mut wgpu::Buffer,
+        vertex_buffer_size: &mut u64,
         metadata_to_depth: impl FnMut(usize) -> f32,
     ) -> Result<(), PrepareError> {
         self.prepare_with_depth_and_custom(
@@ -89,6 +95,8 @@ impl TextRenderer {
             viewport,
             text_areas,
             cache,
+            vertex_buffer,
+            vertex_buffer_size,
             metadata_to_depth,
             |_| None,
         )
@@ -104,6 +112,9 @@ impl TextRenderer {
         viewport: &Viewport,
         text_areas: impl IntoIterator<Item = TextArea<'a>>,
         cache: &mut SwashCache,
+
+        vertex_buffer: &mut wgpu::Buffer,
+        vertex_buffer_size: &mut u64,
         rasterize_custom_glyph: impl FnMut(RasterizeCustomGlyphRequest) -> Option<RasterizedCustomGlyph>,
     ) -> Result<(), PrepareError> {
         self.prepare_with_depth_and_custom(
@@ -114,6 +125,8 @@ impl TextRenderer {
             viewport,
             text_areas,
             cache,
+            vertex_buffer,
+            vertex_buffer_size,
             zero_depth,
             rasterize_custom_glyph,
         )
@@ -129,6 +142,8 @@ impl TextRenderer {
         viewport: &Viewport,
         text_areas: impl IntoIterator<Item = TextArea<'a>>,
         cache: &mut SwashCache,
+        vertex_buffer: &mut wgpu::Buffer,
+        vertex_buffer_size: &mut u64,
         mut metadata_to_depth: impl FnMut(usize) -> f32,
         mut rasterize_custom_glyph: impl FnMut(
             RasterizeCustomGlyphRequest,
@@ -227,8 +242,9 @@ impl TextRenderer {
             let is_run_visible = |run: &cosmic_text::LayoutRun| {
                 let start_y_physical = (text_area.top + (run.line_top * text_area.scale)) as i32;
                 let end_y_physical = start_y_physical + (run.line_height * text_area.scale) as i32;
-                
-                start_y_physical <= text_area.bounds.bottom && text_area.bounds.top <= end_y_physical
+
+                start_y_physical <= text_area.bounds.bottom
+                    && text_area.bounds.top <= end_y_physical
             };
 
             let layout_runs = text_area
@@ -311,10 +327,10 @@ impl TextRenderer {
             )
         };
 
-        if self.vertex_buffer_size >= vertices_raw.len() as u64 {
-            queue.write_buffer(&self.vertex_buffer, 0, vertices_raw);
+        if *vertex_buffer_size >= vertices_raw.len() as u64 {
+            queue.write_buffer(vertex_buffer, 0, vertices_raw);
         } else {
-            self.vertex_buffer.destroy();
+            vertex_buffer.destroy();
 
             let (buffer, buffer_size) = create_oversized_buffer(
                 device,
@@ -323,32 +339,32 @@ impl TextRenderer {
                 BufferUsages::VERTEX | BufferUsages::COPY_DST,
             );
 
-            self.vertex_buffer = buffer;
-            self.vertex_buffer_size = buffer_size;
+            *vertex_buffer = buffer;
+            *vertex_buffer_size = buffer_size;
         }
 
         Ok(())
     }
 
-    /// Renders all layouts that were previously provided to `prepare`.
-    pub fn render(
-        &self,
-        atlas: &TextAtlas,
-        viewport: &Viewport,
-        pass: &mut RenderPass<'_>,
-    ) -> Result<(), RenderError> {
-        if self.glyph_vertices.is_empty() {
-            return Ok(());
-        }
-
-        pass.set_pipeline(&self.pipeline);
-        pass.set_bind_group(0, &atlas.bind_group, &[]);
-        pass.set_bind_group(1, &viewport.bind_group, &[]);
-        pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
-        pass.draw(0..4, 0..self.glyph_vertices.len() as u32);
-
-        Ok(())
-    }
+    // Renders all layouts that were previously provided to `prepare`.
+    // pub fn render(
+    //     &self,
+    //     atlas: &TextAtlas,
+    //     viewport: &Viewport,
+    //     pass: &mut RenderPass<'_>,
+    // ) -> Result<(), RenderError> {
+    //     if self.glyph_vertices.is_empty() {
+    //         return Ok(());
+    //     }
+    //
+    //     pass.set_pipeline(&self.pipeline);
+    //     pass.set_bind_group(0, &atlas.bind_group, &[]);
+    //     pass.set_bind_group(1, &viewport.bind_group, &[]);
+    //     pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
+    //     pass.draw(0..4, 0..self.glyph_vertices.len() as u32);
+    //
+    //     Ok(())
+    // }
 }
 
 #[repr(u16)]

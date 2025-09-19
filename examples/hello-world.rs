@@ -167,30 +167,30 @@ impl winit::application::ApplicationHandler for Application {
                     },
                 );
 
-                text_renderer
-                    .prepare(
-                        device,
-                        queue,
-                        font_system,
-                        atlas,
-                        viewport,
-                        [TextArea {
-                            buffer: text_buffer,
-                            left: 10.0,
-                            top: 10.0,
-                            scale: 1.0,
-                            bounds: TextBounds {
-                                left: 0,
-                                top: 0,
-                                right: 600,
-                                bottom: 160,
-                            },
-                            default_color: Color::rgb(255, 255, 255),
-                            custom_glyphs: &[],
-                        }],
-                        swash_cache,
-                    )
-                    .unwrap();
+                // text_renderer
+                //     .prepare(
+                //         device,
+                //         queue,
+                //         font_system,
+                //         atlas,
+                //         viewport,
+                //         [TextArea {
+                //             buffer: text_buffer,
+                //             left: 10.0,
+                //             top: 10.0,
+                //             scale: 1.0,
+                //             bounds: TextBounds {
+                //                 left: 0,
+                //                 top: 0,
+                //                 right: 600,
+                //                 bottom: 160,
+                //             },
+                //             default_color: Color::rgb(255, 255, 255),
+                //             custom_glyphs: &[],
+                //         }],
+                //         swash_cache,
+                //     )
+                //     .unwrap();
 
                 let frame = surface.get_current_texture().unwrap();
                 let view = frame.texture.create_view(&TextureViewDescriptor::default());
@@ -213,7 +213,7 @@ impl winit::application::ApplicationHandler for Application {
                         occlusion_query_set: None,
                     });
 
-                    text_renderer.render(atlas, viewport, &mut pass).unwrap();
+                    // text_renderer.render(atlas, viewport, &mut pass).unwrap();
                 }
 
                 queue.submit(Some(encoder.finish()));

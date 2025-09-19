@@ -220,73 +220,73 @@ impl winit::application::ApplicationHandler for Application {
                     },
                 );
 
-                text_renderer
-                    .prepare_with_custom(
-                        device,
-                        queue,
-                        font_system,
-                        atlas,
-                        viewport,
-                        [TextArea {
-                            buffer: text_buffer,
-                            left: 10.0,
-                            top: 10.0,
-                            scale: 1.0,
-                            bounds: TextBounds {
-                                left: 0,
-                                top: 0,
-                                right: 650,
-                                bottom: 180,
-                            },
-                            default_color: Color::rgb(255, 255, 255),
-                            custom_glyphs: &[
-                                CustomGlyph {
-                                    id: 0,
-                                    left: 300.0,
-                                    top: 5.0,
-                                    width: 64.0,
-                                    height: 64.0,
-                                    color: Some(Color::rgb(200, 200, 255)),
-                                    snap_to_physical_pixel: true,
-                                    metadata: 0,
-                                },
-                                CustomGlyph {
-                                    id: 1,
-                                    left: 400.0,
-                                    top: 5.0,
-                                    width: 64.0,
-                                    height: 64.0,
-                                    color: None,
-                                    snap_to_physical_pixel: true,
-                                    metadata: 0,
-                                },
-                                CustomGlyph {
-                                    id: 0,
-                                    left: 300.0,
-                                    top: 130.0,
-                                    width: 64.0,
-                                    height: 64.0,
-                                    color: Some(Color::rgb(200, 255, 200)),
-                                    snap_to_physical_pixel: true,
-                                    metadata: 0,
-                                },
-                                CustomGlyph {
-                                    id: 1,
-                                    left: 400.0,
-                                    top: 130.0,
-                                    width: 64.0,
-                                    height: 64.0,
-                                    color: None,
-                                    snap_to_physical_pixel: true,
-                                    metadata: 0,
-                                },
-                            ],
-                        }],
-                        swash_cache,
-                        rasterize_svg,
-                    )
-                    .unwrap();
-
+                // text_renderer
+                //     .prepare_with_custom(
+                //         device,
+                //         queue,
+                //         font_system,
+                //         atlas,
+                //         viewport,
+                //         [TextArea {
+                //             buffer: text_buffer,
+                //             left: 10.0,
+                //             top: 10.0,
+                //             scale: 1.0,
+                //             bounds: TextBounds {
+                //                 left: 0,
+                //                 top: 0,
+                //                 right: 650,
+                //                 bottom: 180,
+                //             },
+                //             default_color: Color::rgb(255, 255, 255),
+                //             custom_glyphs: &[
+                //                 CustomGlyph {
+                //                     id: 0,
+                //                     left: 300.0,
+                //                     top: 5.0,
+                //                     width: 64.0,
+                //                     height: 64.0,
+                //                     color: Some(Color::rgb(200, 200, 255)),
+                //                     snap_to_physical_pixel: true,
+                //                     metadata: 0,
+                //                 },
+                //                 CustomGlyph {
+                //                     id: 1,
+                //                     left: 400.0,
+                //                     top: 5.0,
+                //                     width: 64.0,
+                //                     height: 64.0,
+                //                     color: None,
+                //                     snap_to_physical_pixel: true,
+                //                     metadata: 0,
+                //                 },
+                //                 CustomGlyph {
+                //                     id: 0,
+                //                     left: 300.0,
+                //                     top: 130.0,
+                //                     width: 64.0,
+                //                     height: 64.0,
+                //                     color: Some(Color::rgb(200, 255, 200)),
+                //                     snap_to_physical_pixel: true,
+                //                     metadata: 0,
+                //                 },
+                //                 CustomGlyph {
+                //                     id: 1,
+                //                     left: 400.0,
+                //                     top: 130.0,
+                //                     width: 64.0,
+                //                     height: 64.0,
+                //                     color: None,
+                //                     snap_to_physical_pixel: true,
+                //                     metadata: 0,
+                //                 },
+                //             ],
+                //         }],
+                //         swash_cache,
+                //         rasterize_svg,
+                //     )
+                //     .unwrap();
+                //
                 let frame = surface.get_current_texture().unwrap();
                 let view = frame.texture.create_view(&TextureViewDescriptor::default());
                 let mut encoder =
@@ -313,7 +313,7 @@ impl winit::application::ApplicationHandler for Application {
                         occlusion_query_set: None,
                     });
 
-                    text_renderer.render(atlas, viewport, &mut pass).unwrap();
+                    // text_renderer.render(atlas, viewport, &mut pass).unwrap();
                 }
 
                 queue.submit(Some(encoder.finish()));

@@ -96,19 +96,19 @@ fn run_bench(ctx: &mut Criterion) {
                     })
                     .collect();
 
-                criterion::black_box(
-                    text_renderer
-                        .prepare(
-                            &state.device,
-                            &state.queue,
-                            &mut font_system,
-                            &mut atlas,
-                            &viewport,
-                            text_areas,
-                            &mut swash_cache,
-                        )
-                        .unwrap(),
-                );
+                // criterion::black_box(
+                //     text_renderer
+                //         .prepare(
+                //             &state.device,
+                //             &state.queue,
+                //             &mut font_system,
+                //             &mut atlas,
+                //             &viewport,
+                //             text_areas,
+                //             &mut swash_cache,
+                //         )
+                //         .unwrap(),
+                // );
 
                 atlas.trim();
             })

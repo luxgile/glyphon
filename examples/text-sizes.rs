@@ -257,17 +257,17 @@ impl winit::application::ApplicationHandler for Application {
                     })
                     .collect();
 
-                text_renderer
-                    .prepare(
-                        device,
-                        queue,
-                        font_system,
-                        atlas,
-                        viewport,
-                        text_areas,
-                        swash_cache,
-                    )
-                    .unwrap();
+                // text_renderer
+                //     .prepare(
+                //         device,
+                //         queue,
+                //         font_system,
+                //         atlas,
+                //         viewport,
+                //         text_areas,
+                //         swash_cache,
+                //     )
+                //     .unwrap();
 
                 let frame = surface.get_current_texture().unwrap();
                 let view = frame.texture.create_view(&TextureViewDescriptor::default());
@@ -290,7 +290,7 @@ impl winit::application::ApplicationHandler for Application {
                         occlusion_query_set: None,
                     });
 
-                    text_renderer.render(atlas, viewport, &mut pass).unwrap();
+                    // text_renderer.render(atlas, viewport, &mut pass).unwrap();
                 }
 
                 queue.submit(Some(encoder.finish()));

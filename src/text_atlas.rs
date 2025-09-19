@@ -283,7 +283,7 @@ pub enum ColorMode {
 /// An atlas containing a cache of rasterized glyphs that can be rendered.
 pub struct TextAtlas {
     cache: Cache,
-    pub(crate) bind_group: BindGroup,
+    pub bind_group: BindGroup,
     pub(crate) color_atlas: InnerAtlas,
     pub(crate) mask_atlas: InnerAtlas,
     pub(crate) format: TextureFormat,
